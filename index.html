@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cek Khodam</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
+    <style>
+        body {
+            background-image: url(amat3.jpeg);
+            background-size: 250px;
+            font-family: 'Poppins', sans-serif; /* Font modern Poppins */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            min-height: 100vh;
+            margin: 0;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .card {
+            background-color: rgba(147, 148, 171, 0.25);
+            padding: 20px;
+            border: 1px solid #FFA500; /* Border jingga ke kuningan */
+            border-radius: 10px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Shadow lebih gelap */
+            backdrop-filter: blur(10px); /* Blur lebih kuat */
+            position: relative; /* Untuk positioning spinner */
+        }
+
+        h1, p {
+            color: #FFA500; /* Warna font jingga ke kuningan */
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #FFA500; /* Border input */
+            border-radius: 200px;
+            text-align: center;
+            width: 80%;
+            margin-bottom: 20px;
+            background-color: transparent;
+            color: #FFA500;
+        }
+
+        button {
+            background-color: #5F59D0;
+            color: #ffffff;
+            padding: 10px 25px;
+            font-size: 16px;
+            border: none;
+            border-radius: 200px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            background-color: #4e4aa7;
+            transform: translateY(-3px); /* Efek naik saat hover */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Shadow lebih dalam saat hover */
+        }
+
+        .footer {
+            color: #97D3FF;
+            font-weight: bold;
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+        }
+
+        #result {
+            display: none;
+        }
+
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #FFA500; /* Warna jingga ke kuningan */
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -20px; /* Setengah dari tinggi */
+            margin-left: -20px; /* Setengah dari lebar */
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h1>Cek Khodam</h1>
+        <p>Masukkan nama Anda untuk mengetahui khodam Anda.</p>
+        <input type="text" id="nameInput" placeholder="Tulis nama kamu di sini">
+        <button onclick="cekKhodam()">Cek Khodam</button>
+        <div id="loading" class="loading-spinner" style="display: none;"></div>
+        <button onclick="resetForm()" style="margin-top: 20px;">Cek Lagi</button>
+        <div id="result">
+            <h2 id="khodamName"></h2>
+            <p id="khodamMeaning"></p>
+        </div>
+    </div>
+    <div class="footer">
+        © 2024 <a href="https://wa.me/6285791346128" target="_blank">Rasya R.</a>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+        function cekKhodam() {
+            const nameInput = document.getElementById('nameInput').value;
+            if (!nameInput) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Silakan masukkan nama Anda.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+            document.getElementById('loading').style.display = 'block'; // Tampilkan spinner
+            setTimeout(() => {
+                const khodams = [
+                     { name: "Harimau Putih", meaning: "Kamu kuat dan berani seperti harimau, karena pendahulumu mewariskan kekuatan besar padamu." },
+                     { name: "Monyet Kekar", meaning: "Kamu lincah dan cerdas, mampu menghadapi berbagai tantangan dengan ketangkasan." },
+                     { name: "Naga Merah", meaning: "Kamu memiliki kekuatan luar biasa dan kebijaksanaan, seperti naga yang legendaris." },
+                     { name: "Burung Garuda", meaning: "Kamu bebas dan perkasa, melambangkan kebebasan dan kemuliaan." },
+                     { name: "Serigala Hitam", meaning: "Kamu setia dan memiliki insting tajam, mampu melindungi diri dan orang lain." },
+                     { name: "Macan Kumbang", meaning: "Kamu misterius dan kuat, seperti macan yang jarang terlihat tapi selalu waspada." },
+                     { name: "Kuda Emas", meaning: "Kamu berharga dan kuat, siap untuk berlari menuju kesuksesan." },
+                     { name: "Elang Biru", meaning: "Kamu memiliki visi yang tajam dan dapat melihat peluang dari jauh." },
+                     { name: "Harimau Loreng", meaning: "Kamu tangguh dan memiliki kekuatan untuk melindungi dan menyerang." },
+                     { name: "Gajah Putih", meaning: "Kamu bijaksana dan memiliki kekuatan besar, lambang dari keberanian dan keteguhan hati." },
+                     { name: "Banteng Sakti", meaning: "Kamu kuat dan penuh semangat, tidak takut menghadapi rintangan." },
+                     { name: "Ular Raksasa", meaning: "Kamu memiliki kebijaksanaan dan kekuatan tersembunyi, siap menyerang jika diperlukan." },
+                     { name: "Ikan Dewa", meaning: "Kamu tenang dan penuh kedamaian, membawa rezeki dan keberuntungan." },
+                     { name: "Kucing Hitam", meaning: "Kamu misterius dan penuh dengan rahasia, membawa keberuntungan bagi yang memahami." },
+                     { name: "Rusa Emas", meaning: "Kamu anggun dan berharga, selalu dihargai oleh orang-orang di sekitarmu." },
+                     { name: "Singa Bermahkota", meaning: "Kamu lahir sebagai pemimpin, memiliki kekuatan dan kebijaksanaan seorang raja." },
+                     { name: "Kijang Perak", meaning: "Kamu cepat dan cekatan, selalu waspada dan siap untuk melompat lebih jauh." },
+                     { name: "Anjing Pelacak", meaning: "Kamu setia dan penuh dedikasi, selalu menemukan jalan menuju tujuanmu." },
+                     { name: "Ayam Kutub", meaning: "Jangan lupa share ke yang agar mereka tahu sosok aseli yang ada di dalam diri kamu" },
+                     { name: "Topeng Monyet", meaning: "Jangan lupa share ke yang agar mereka tahu sosok aseli yang ada di dalam diri kamu." },
+                     { name: "Anjing Nigga", meaning: "Jangan lupa share ke yang agar mereka tahu sosok aseli yang ada di dalam diri kamu." },
+                     { name: "Harimau sakti", meaning: "Jangan lupa share ke yang agar mereka tahu sosok aseli yang ada di dalam diri kamu." },
+                    // Tambahkan khodam lainnya sesuai kebutuhan
+                ];
+                const khodam = khodams[Math.floor(Math.random() * khodams.length)];
+                document.getElementById('khodamName').innerText = `Khodam: ${khodam.name}`;
+                document.getElementById('khodamMeaning').innerText = khodam.meaning;
+                document.getElementById('result').style.display = 'block';
+                document.getElementById('loading').style.display = 'none'; // Sembunyikan spinner
+            }, 2000); // Delay untuk simulasi loading
+        }
+
+        function resetForm() {
+            document.getElementById('nameInput').value = '';
+            document.getElementById('result').style.display = 'none';
+        }
+    </script>
+</body>
+
+</html>
